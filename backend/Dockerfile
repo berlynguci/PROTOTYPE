@@ -4,12 +4,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    curl \
     gdal-bin \
     libgdal-dev \
     libgeos-dev \
     libproj-dev \
     pkg-config \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
