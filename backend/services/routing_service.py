@@ -219,8 +219,6 @@ def route_all(
 # ============================================================
 
 
-
-
 def filter_df_to_demo_depot(
     df: pd.DataFrame,
     dataset_role: str,

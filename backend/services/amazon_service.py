@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from config import AMAZON_DEFAULT_REPRESENTATIVES, AMAZON_MIN_PREVIEW_STOPS
 from schemas import FieldMapping
 from services.distance_service import haversine_km
-from services.reconstruction_base_service import _base_reconstruct_from_mapping
+from services.base_reconstruction_service import _base_reconstruct_from_mapping
 from services.routing_service import (
     assign_preview_rep_ids_uneven,
     choose_best_local_depot_cluster,

@@ -130,5 +130,3 @@ def train_eta_models(df: pd.DataFrame, seed: int) -> Tuple[np.ndarray, Dict[str,
         },
     }
     return pred_enhanced, metrics
-build_eta_features
-train_eta_models

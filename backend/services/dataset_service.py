@@ -10,7 +10,7 @@ from schemas import FieldMapping
 from services.distance_service import haversine_km
 from services.amazon_service import reconstruct_raw_amazon_dataset
 from services.zomato_service import reconstruct_raw_zomato_dataset
-from services.reconstruction_base_service import reconstruct_generic_uploaded_dataset
+from services.base_reconstruction_service import reconstruct_generic_uploaded_dataset
 
 # ============================================================
 # SECTION 6: Dataset upload, normalization, and reconstruction
