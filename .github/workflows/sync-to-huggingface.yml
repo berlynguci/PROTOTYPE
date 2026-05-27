@@ -3,7 +3,7 @@ name: Sync backend to Hugging Face Space
 on:
   push:
     branches:
-      - main
+      - separate-files
 
 jobs:
   sync-to-hub:
