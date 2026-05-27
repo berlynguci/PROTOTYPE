@@ -1,3 +1,15 @@
+---
+title: Thesis Backend
+emoji: 🚚
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+---
+
+# Thesis Backend
+FastAPI backend for thesis routing prototype.
+
 How to Run
 
 1. Open terminal and type "cd backend"
