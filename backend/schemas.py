@@ -1,0 +1,5 @@
+FieldMapping
+BaselineRequest
+EnhancedRequest
+AddedCustomerPayload
+BaselineAddCustomersRequest
