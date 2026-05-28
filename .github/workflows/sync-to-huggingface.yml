@@ -13,11 +13,11 @@ jobs:
       - name: Checkout GitHub repo
         uses: actions/checkout@v4
 
-      - name: Sync backend folder to Hugging Face Space
-        uses: huggingface/hub-sync@main
+      - name: Sync repository to Hugging Face Space
+        uses: huggingface/hub-sync@v0.1.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repo_id: ${{ github.repository }}
+          huggingface_repo_id: berlynguci/thesis-backend
           hf_token: ${{ secrets.HF_TOKEN }}
-          repo_id: berlynguci/thesis-backend
           repo_type: space
-          source_dir: backend
+          space_sdk: docker
