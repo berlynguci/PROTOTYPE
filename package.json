@@ -72,7 +72,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css}\""
   },
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "keywords": [],
   "author": "",
