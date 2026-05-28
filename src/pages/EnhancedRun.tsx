@@ -468,6 +468,15 @@ const EnhancedRun: React.FC = () => {
                         {enhancedRun.kpis.fairness.toFixed(3)}
                       </p>
                     </div>
+                    <div className="rounded-lg bg-slate-50 p-3">
+                      <p className="text-xs text-gray-500">CPU Runtime</p>
+                      <p className="text-lg font-semibold text-gray-900">
+                        {enhancedRun.cpuRuntimeSeconds !== undefined
+                          ? enhancedRun.cpuRuntimeSeconds.toFixed(3)
+                          : '—'}{' '}
+                        sec
+                      </p>
+                    </div>
                   </div>
                 </Card>
 
