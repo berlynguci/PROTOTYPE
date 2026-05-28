@@ -185,6 +185,9 @@ export interface AlgorithmRun {
     previewPoints: number;
     matrixPairs: number;
   };
+
+  cpuRuntimeSeconds?: number;
+  cpuRuntimeLabel?: string;
 }
 
 export interface BaselineRunRequest {

@@ -522,6 +522,16 @@ const BaselineRun: React.FC = () => {
                       value={run.kpis.fairness}
                       icon={<UsersIcon className="w-5 h-5" />}
                     />
+                    <KPICard
+                      title="CPU Runtime"
+                      value={
+                        run?.cpuRuntimeSeconds !== undefined
+                          ? run.cpuRuntimeSeconds.toFixed(3)
+                          : "—"
+                      }
+                      unit="sec"
+                      icon={<ClockIcon className="w-5 h-5" />}
+                    />
                   </div>
                 </div>
 
