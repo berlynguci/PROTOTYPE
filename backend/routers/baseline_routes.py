@@ -1,5 +1,6 @@
 from typing import Any, Dict, List
 
+import time
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Response
 
@@ -54,7 +55,6 @@ from services.routing_service import (
 router = APIRouter()
 
 @router.post("/api/runs/baseline")
-@router.post("/api/runs/baseline/add-customers")
 
 
 def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
@@ -72,6 +72,8 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
     note:
     - This endpoint represents the baseline GNN + Dijkstra workflow.
     """
+    runtime_start = time.perf_counter()
+
     print("run_baseline started")
 
     payload = DATASETS.get(req.dataset_id)
@@ -260,7 +262,12 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
         "profile": profile,
     }
 
-    print("run_baseline finished")
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    preview_run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    preview_run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
+
+    print(f"run_baseline finished in {runtime_seconds:.3f} seconds")
     return preview_run
 
 # ============================================================
@@ -277,6 +284,7 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
 #   going to only one representative.
 # ============================================================
 
+@router.post("/api/runs/baseline/add-customers")
 def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any]:
     """
     Updates an existing baseline run with newly added customers.
@@ -291,6 +299,8 @@ def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any
     Used by:
     - Add Customer modal in the React frontend.
     """
+    runtime_start = time.perf_counter()
+
     baseline_payload = RUNS.get(req.baseline_run_id)
     if not baseline_payload:
         raise HTTPException(status_code=404, detail="Baseline run not found.")
@@ -389,6 +399,11 @@ def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any
         }
         for c in resolved_customers
     ]
+
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    updated_run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    updated_run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
 
     RUNS[updated_run["id"]] = {
         "assign_df": updated_assign_df,
