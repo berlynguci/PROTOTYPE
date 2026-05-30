@@ -8,9 +8,8 @@ from fastapi import HTTPException, UploadFile
 from config import RUN_PROFILES
 from schemas import FieldMapping
 from services.distance_service import haversine_km
-from services.amazon_service import reconstruct_raw_amazon_dataset
-from services.zomato_service import reconstruct_raw_zomato_dataset
-from services.base_reconstruction_service import reconstruct_generic_uploaded_dataset
+# Note: dataset-specific reconstruction imports are performed lazily
+# inside `normalize_dataset` to avoid circular imports between services.
 
 # ============================================================
 # SECTION 6: Dataset upload, normalization, and reconstruction
@@ -196,12 +195,20 @@ def normalize_dataset(
         out.reset_index(drop=True, inplace=True)
         return out
 
-    # dataset-specific raw reconstruction
+    # dataset-specific raw reconstruction (import lazily to avoid circular imports)
     if source_role == "primary_reconstruction":
+        from services.amazon_service import reconstruct_raw_amazon_dataset
+
         return reconstruct_raw_amazon_dataset(df, mapping)
 
     if source_role == "comparative_template":
+        from services.zomato_service import reconstruct_raw_zomato_dataset
+
         return reconstruct_raw_zomato_dataset(df, mapping)
+
+    from services.base_reconstruction_service import (
+        reconstruct_generic_uploaded_dataset,
+    )
 
     return reconstruct_generic_uploaded_dataset(df, mapping)
 
