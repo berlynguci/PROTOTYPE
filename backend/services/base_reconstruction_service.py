@@ -1,4 +1,10 @@
+import pandas as pd
+import numpy as np
+from fastapi import HTTPException
 
+from schemas import FieldMapping
+from services.dataset_service import parse_order_date_series
+from services.distance_service import haversine_km
 
 def _base_reconstruct_from_mapping(
     df: pd.DataFrame, mapping: FieldMapping
