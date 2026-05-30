@@ -1,4 +1,5 @@
 from typing import Any, Dict
+import time
 
 from fastapi import APIRouter, HTTPException, Response
 
@@ -41,6 +42,8 @@ def run_enhanced(req: EnhancedRequest) -> Dict[str, Any]:
     - This endpoint represents the enhanced algorithm evaluated against
       the baseline output.
     """
+    runtime_start = time.perf_counter()
+
     print("enhanced started")
     dataset_payload = DATASETS.get(req.dataset_id)
     baseline_payload = RUNS.get(req.baseline_run_id)
@@ -180,6 +183,11 @@ def run_enhanced(req: EnhancedRequest) -> Dict[str, Any]:
     run["profileConfig"] = profile
     run["previewSummary"] = preview_summary_from_assign_df(improved_df)
     run["previewMode"] = True
+
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
 
     RUNS[run["id"]] = {
         "assign_df": improved_df,
