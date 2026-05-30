@@ -32,9 +32,6 @@ from services.dataset_service import (
 router = APIRouter()
 
 @router.post("/api/datasets/validate")
-@router.get("/api/datasets/{dataset_id}/meta")
-@router.get("/api/datasets/{dataset_id}/reconstructed")
-
 async def validate_dataset(
     file: UploadFile = File(...),
     mapping_json: str = Form(...),
@@ -111,6 +108,7 @@ async def validate_dataset(
         **summary,
     }
 
+@router.get("/api/datasets/{dataset_id}/meta")
 def dataset_meta(dataset_id: str) -> Dict[str, Any]:
     """
     Returns dataset metadata needed by the frontend.
@@ -153,6 +151,7 @@ def dataset_meta(dataset_id: str) -> Dict[str, Any]:
         "depot": depot,
     }
 
+@router.get("/api/datasets/{dataset_id}/reconstructed")
 def download_reconstructed_dataset(dataset_id: str):
     """
     Downloads the reconstructed route-ready dataset as CSV.
