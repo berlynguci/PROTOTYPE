@@ -50,6 +50,8 @@ export interface Route {
   representativeName: string;
   stops: RouteStop[];
   color: string;
+  returnLegDistance?: number;
+  routeDistance?: number;
 
   // new: visual-only geometry from last stop back to depot
   returnPath?: Coordinate[];

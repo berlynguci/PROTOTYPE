@@ -3,12 +3,12 @@ import json
 import uuid
 from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, File, Form, UploadFile, Response
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile, Response
 from fastapi.responses import StreamingResponse
 
-from schemas import FieldMapping
-from state import DATASETS
-from services.dataset_service import (
+from backend.schemas import FieldMapping
+from backend.state import DATASETS
+from backend.services.dataset_service import (
     autofill_mapping_from_known_columns,
     infer_dataset_role,
     normalize_dataset,
@@ -32,8 +32,6 @@ from services.dataset_service import (
 router = APIRouter()
 
 @router.post("/api/datasets/validate")
-@router.get("/api/datasets/{dataset_id}/meta")
-@router.get("/api/datasets/{dataset_id}/reconstructed")
 
 async def validate_dataset(
     file: UploadFile = File(...),
@@ -111,6 +109,7 @@ async def validate_dataset(
         **summary,
     }
 
+@router.get("/api/datasets/{dataset_id}/meta")
 def dataset_meta(dataset_id: str) -> Dict[str, Any]:
     """
     Returns dataset metadata needed by the frontend.
@@ -153,6 +152,7 @@ def dataset_meta(dataset_id: str) -> Dict[str, Any]:
         "depot": depot,
     }
 
+@router.get("/api/datasets/{dataset_id}/reconstructed")
 def download_reconstructed_dataset(dataset_id: str):
     """
     Downloads the reconstructed route-ready dataset as CSV.

@@ -10,7 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
-from services.distance_service import haversine_km
+from backend.services.distance_service import haversine_km
 
 # ============================================================
 # SECTION 7: ETA feature preparation and model training

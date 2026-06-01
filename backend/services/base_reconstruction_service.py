@@ -1,5 +1,14 @@
 
 
+from fastapi import HTTPException
+import numpy as np
+import pandas as pd
+
+from backend.schemas import FieldMapping
+from backend.services.distance_service import haversine_km
+from backend.utils.date_utils import parse_order_date_series
+
+
 def _base_reconstruct_from_mapping(
     df: pd.DataFrame, mapping: FieldMapping
 ) -> pd.DataFrame:

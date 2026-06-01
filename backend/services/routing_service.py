@@ -5,16 +5,16 @@ import numpy as np
 import pandas as pd
 from fastapi import HTTPException
 
-from config import (
+from backend.config import (
     DEMO_PREVIEW_DEPOTS,
     MIN_FIXED_DEMO_AGENTS,
     MIN_FIXED_DEMO_NODES,
 )
-from services.dataset_service import parse_order_date_series
-from services.distance_service import haversine_km, matrix_cost
-from services.routing_node_service import ensure_preview_node_ids
+from backend.utils.date_utils import parse_order_date_series
+from backend.services.distance_service import haversine_km, matrix_cost
+from backend.services.routing_node_service import ensure_preview_node_ids
 
-from services.workload_service import (
+from backend.services.workload_service import (
     compute_customer_workload_contribution,
     compute_normalized_delay_series,
     compute_route_workload,
@@ -127,6 +127,8 @@ def route_one_rep(
         "distance_km": total_distance,
         "travel_minutes": travel_minutes,
         "operational_minutes": operational_minutes,
+        "return_leg_km": return_leg,
+        "customer_path_distance_km": cumulative_distance,
     }
 
 def route_all(
@@ -178,6 +180,8 @@ def route_all(
                 "representativeName": rep_id,
                 "color": color,
                 "stops": ordered_stops,
+                "returnLegDistance": round(float(stats.get("return_leg_km", 0.0)), 2),
+                "routeDistance": round(float(stats.get("distance_km", 0.0)), 2),
             }
         )
 

@@ -4,10 +4,10 @@ from typing import Any, Dict, List
 import pandas as pd
 from fastapi import HTTPException
 
-from schemas import AddedCustomerPayload
-from services.distance_service import haversine_km
-from services.metrics_service import compute_thesis_priority_scores
-from services.routing_node_service import ensure_preview_node_ids
+from backend.schemas import AddedCustomerPayload
+from backend.services.distance_service import haversine_km
+from backend.services.metrics_service import compute_thesis_priority_scores
+from backend.services.routing_node_service import ensure_preview_node_ids
 
 # ============================================================
 # SECTION 11: Add-customer rerouting workflow

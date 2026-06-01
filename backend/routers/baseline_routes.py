@@ -1,9 +1,10 @@
 from typing import Any, Dict, List
 
+import time
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Response
 
-from config import (
+from backend.config import (
     AMAZON_DEFAULT_REPRESENTATIVES,
     AMAZON_FIXED_DEMO_AGENTS,
     AMAZON_FIXED_DEMO_NODES,
@@ -12,27 +13,27 @@ from config import (
     MIN_FIXED_DEMO_AGENTS,
     MIN_FIXED_DEMO_NODES,
 )
-from schemas import AddedCustomerPayload, BaselineAddCustomersRequest, BaselineRequest
-from state import DATASETS, RUNS
-from services.added_customer_service import (
+from backend.schemas import AddedCustomerPayload, BaselineAddCustomersRequest, BaselineRequest
+from backend.state import DATASETS, RUNS
+from backend.services.added_customer_service import (
     append_added_customers_to_assign_df,
     assign_new_customer_to_nearest_rep,
 )
-from services.amazon_service import (
+from backend.services.amazon_service import (
     build_amazon_order_routing_rows,
     build_local_preview_subset_amazon,
 )
-from services.dataset_service import build_routing_nodes, get_run_profile
-from services.distance_service import (
+from backend.services.dataset_service import build_routing_nodes, get_run_profile
+from backend.services.distance_service import (
     attach_route_display_geometry,
     build_preview_distance_matrix,
     haversine_km,
     preview_matrix_stats,
 )
-from services.eta_service import train_eta_models
-from services.metrics_service import make_algorithm_run
-from services.routing_node_service import ensure_preview_node_ids
-from services.routing_service import (
+from backend.services.eta_service import train_eta_models
+from backend.services.metrics_service import make_algorithm_run
+from backend.services.routing_node_service import ensure_preview_node_ids
+from backend.services.routing_service import (
     build_local_preview_subset,
     filter_df_to_demo_depot,
     preview_summary_from_assign_df,
@@ -54,9 +55,6 @@ from services.routing_service import (
 router = APIRouter()
 
 @router.post("/api/runs/baseline")
-@router.post("/api/runs/baseline/add-customers")
-
-
 def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
     """
     Executes the baseline routing algorithm.
@@ -72,6 +70,8 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
     note:
     - This endpoint represents the baseline GNN + Dijkstra workflow.
     """
+    runtime_start = time.perf_counter()
+
     print("run_baseline started")
 
     payload = DATASETS.get(req.dataset_id)
@@ -260,7 +260,12 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
         "profile": profile,
     }
 
-    print("run_baseline finished")
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    preview_run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    preview_run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
+
+    print(f"run_baseline finished in {runtime_seconds:.3f} seconds")
     return preview_run
 
 # ============================================================
@@ -277,6 +282,7 @@ def run_baseline(req: BaselineRequest) -> Dict[str, Any]:
 #   going to only one representative.
 # ============================================================
 
+@router.post("/api/runs/baseline/add-customers")
 def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any]:
     """
     Updates an existing baseline run with newly added customers.
@@ -291,6 +297,8 @@ def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any
     Used by:
     - Add Customer modal in the React frontend.
     """
+    runtime_start = time.perf_counter()
+
     baseline_payload = RUNS.get(req.baseline_run_id)
     if not baseline_payload:
         raise HTTPException(status_code=404, detail="Baseline run not found.")
@@ -389,6 +397,11 @@ def add_customers_to_baseline(req: BaselineAddCustomersRequest) -> Dict[str, Any
         }
         for c in resolved_customers
     ]
+
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    updated_run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    updated_run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
 
     RUNS[updated_run["id"]] = {
         "assign_df": updated_assign_df,

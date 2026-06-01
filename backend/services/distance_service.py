@@ -6,8 +6,8 @@ import numpy as np
 import osmnx as ox
 import pandas as pd
 
-from config import EARTH_RADIUS_KM, OSM_CACHE_DIR
-from services.routing_node_service import ensure_preview_node_ids
+from backend.config import EARTH_RADIUS_KM, OSM_CACHE_DIR
+from backend.services.routing_node_service import ensure_preview_node_ids
 
 # ============================================================
 # SECTION 4: Distance, OSM, and map geometry helpers

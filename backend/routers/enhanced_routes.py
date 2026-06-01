@@ -1,15 +1,18 @@
+from pdb import run
 from typing import Any, Dict
+
+import time
 
 from fastapi import APIRouter, HTTPException, Response
 
-from schemas import BaselineRequest, EnhancedRequest
-from state import DATASETS, RUNS
-from services.amazon_service import amazon_distance_polish_assignment
-from services.dataset_service import get_run_profile
-from services.distance_service import attach_route_display_geometry
-from services.enhanced_service import enhance_assignment
-from services.metrics_service import make_algorithm_run
-from services.routing_service import preview_summary_from_assign_df, route_all
+from backend.schemas import BaselineRequest, EnhancedRequest
+from backend.state import DATASETS, RUNS
+from backend.services.amazon_service import amazon_distance_polish_assignment
+from backend.services.dataset_service import get_run_profile
+from backend.services.distance_service import attach_route_display_geometry
+from backend.services.enhanced_service import enhance_assignment
+from backend.services.metrics_service import make_algorithm_run
+from backend.services.routing_service import preview_summary_from_assign_df, route_all
 
 # ============================================================
 # SECTION 12: API endpoints
@@ -41,6 +44,8 @@ def run_enhanced(req: EnhancedRequest) -> Dict[str, Any]:
     - This endpoint represents the enhanced algorithm evaluated against
       the baseline output.
     """
+    runtime_start = time.perf_counter()
+
     print("enhanced started")
     dataset_payload = DATASETS.get(req.dataset_id)
     baseline_payload = RUNS.get(req.baseline_run_id)
@@ -180,6 +185,11 @@ def run_enhanced(req: EnhancedRequest) -> Dict[str, Any]:
     run["profileConfig"] = profile
     run["previewSummary"] = preview_summary_from_assign_df(improved_df)
     run["previewMode"] = True
+
+    runtime_seconds = time.perf_counter() - runtime_start
+
+    run["cpuRuntimeSeconds"] = round(runtime_seconds, 3)
+    run["cpuRuntimeLabel"] = f"{runtime_seconds:.3f} sec"
 
     RUNS[run["id"]] = {
         "assign_df": improved_df,

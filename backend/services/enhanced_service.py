@@ -3,15 +3,15 @@ from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 
-from services.distance_service import haversine_km
-from services.metrics_service import (
+from backend.services.distance_service import haversine_km
+from backend.services.metrics_service import (
     compute_thesis_priority_scores,
     jains_fairness,
     objective_value,
     workload_balance_index,
 )
-from services.routing_node_service import ensure_preview_node_ids
-from services.routing_service import route_all
+from backend.services.routing_node_service import ensure_preview_node_ids
+from backend.services.routing_service import route_all
 
 # ============================================================
 # SECTION 10: Enhanced DEQ rebalancing logic

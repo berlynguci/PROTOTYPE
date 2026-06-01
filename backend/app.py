@@ -1,20 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from pathlib import Path
 
-from routers.baseline_routes import router as baseline_router
-from routers.dataset_routes import router as dataset_router
-from routers.enhanced_routes import router as enhanced_router
 
-STATIC_DIR = Path(__file__).parent / "static"
-
-app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
-
-@app.get("/")
-def serve_frontend():
-    return FileResponse(STATIC_DIR / "index.html")
+from backend.routers.baseline_routes import router as baseline_router
+from backend.routers.dataset_routes import router as dataset_router
+from backend.routers.enhanced_routes import router as enhanced_router
 
 # ============================================================
 # FastAPI setup
@@ -30,7 +20,10 @@ def serve_frontend():
 # - API endpoints are now inside routers/.
 # ============================================================
 
-app = FastAPI(title="Delivery Prototype Backend", version="1.1.0")
+app = FastAPI(
+    title="Delivery Prototype Backend", 
+    version="1.1.0"
+)
 
 app.add_middleware(
     CORSMiddleware,

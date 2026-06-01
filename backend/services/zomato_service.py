@@ -1,8 +1,8 @@
 import pandas as pd
 
-from schemas import FieldMapping
-from services.base_reconstruction_service import _base_reconstruct_from_mapping
-from services.distance_service import haversine_km
+from backend.schemas import FieldMapping
+from backend.services.base_reconstruction_service import _base_reconstruct_from_mapping
+from backend.services.distance_service import haversine_km
 
 def reconstruct_raw_zomato_dataset(
     df: pd.DataFrame, mapping: FieldMapping

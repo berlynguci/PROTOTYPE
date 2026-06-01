@@ -5,12 +5,11 @@ import numpy as np
 import pandas as pd
 from fastapi import HTTPException, UploadFile
 
-from config import RUN_PROFILES
-from schemas import FieldMapping
-from services.distance_service import haversine_km
-from services.amazon_service import reconstruct_raw_amazon_dataset
-from services.zomato_service import reconstruct_raw_zomato_dataset
-from services.base_reconstruction_service import reconstruct_generic_uploaded_dataset
+from backend.config import RUN_PROFILES
+from backend.schemas import FieldMapping
+from backend.services.distance_service import haversine_km
+from backend.services.zomato_service import reconstruct_raw_zomato_dataset
+from backend.services.base_reconstruction_service import reconstruct_generic_uploaded_dataset
 
 # ============================================================
 # SECTION 6: Dataset upload, normalization, and reconstruction
@@ -198,6 +197,7 @@ def normalize_dataset(
 
     # dataset-specific raw reconstruction
     if source_role == "primary_reconstruction":
+        from backend.services.amazon_service import reconstruct_raw_amazon_dataset
         return reconstruct_raw_amazon_dataset(df, mapping)
 
     if source_role == "comparative_template":

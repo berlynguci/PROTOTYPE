@@ -13,14 +13,46 @@ const formatSalesRepName = (repId?: string | null) => {
 };
 
 export function RouteTable({ routes, title }: RouteTableProps) {
-  const allStops = routes.flatMap((route) =>
-    route.stops.map((stop) => ({
-      ...stop,
-      routeId: route.id,
-      representativeName: route.representativeName,
-      routeColor: route.color,
-    }))
-  );
+  const allStops = routes.flatMap((route) => {
+  const normalStops = route.stops.map((stop) => ({
+    ...stop,
+    routeId: route.id,
+    representativeName: route.representativeName,
+    routeColor: route.color,
+    isReturnToDepot: false,
+  }));
+
+  const lastStop = route.stops[route.stops.length - 1];
+
+  if (!lastStop) {
+    return normalStops;
+  }
+
+  const returnLegDistance = route.returnLegDistance ?? 0;
+  const routeDistance =
+    route.routeDistance ??
+    ((lastStop.cumulativeDistance ?? 0) + returnLegDistance);
+
+  const returnRow = {
+    stopNumber: 'Return',
+    nodeId: 'DEPOT',
+    nodeName: 'Depot',
+    orderCount: 0,
+    lat: 0,
+    lon: 0,
+    orderId: '-',
+    predictedEtaMin: 0,
+    legDistance: returnLegDistance,
+    cumulativeDistance: routeDistance,
+    eta: lastStop.eta,
+    routeId: route.id,
+    representativeName: route.representativeName,
+    routeColor: route.color,
+    isReturnToDepot: true,
+  };
+
+  return [...normalStops, returnRow];
+});
 
   return (
     <Card padding="none">
